@@ -34,7 +34,7 @@ DEPDIRS := ${DEP} $(addprefix ${DEP}/,${PROJECTS})
 ALLDIRS := ${DEPDIRS} ${OBJDIRS}
 
 
-.PHONY:	all clean 
+.PHONY:	all clean
 
 EXELIST	:= ${EXE}/mtproto-proxy
 
@@ -80,11 +80,11 @@ DEPENDENCE_ALL		:=	${DEPENDENCE_NORM} ${DEPENDENCE_STRANGE} ${DEPENDENCE_LIB}
 
 OBJECTS_ALL		:=	${OBJECTS} ${LIB_OBJS}
 
-all:	${ALLDIRS} ${EXELIST} 
+all:	${ALLDIRS} ${EXELIST}
 dirs: ${ALLDIRS}
-create_dirs_and_headers: ${ALLDIRS} 
+create_dirs_and_headers: ${ALLDIRS}
 
-${ALLDIRS}:	
+${ALLDIRS}:
 	@test -d $@ || mkdir -p $@
 
 -include ${DEPENDENCE_ALL}
@@ -107,4 +107,3 @@ clean:
 	rm -rf ${OBJ} ${DEP} ${EXE} || true
 
 force-clean: clean
-
