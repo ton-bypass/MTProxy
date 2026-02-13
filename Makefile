@@ -12,6 +12,13 @@ ifeq ($m, 64)
 ARCH = -m64
 endif
 
+# Build-time static linking toggle: set STATIC=1 to request a fully static binary.
+# Default is dynamic linking (STATIC=0) because static system libs (libcrypto.a, libz.a)
+# may not be available on the host and cause link failures.
+STATIC ?= 0
+LINK_STATIC := $(if $(filter 1,$(STATIC)),-static,)
+
+
 CFLAGS = $(ARCH) -O3 -std=gnu11 -Wall -Wno-array-bounds -mpclmul -march=core2 -mfpmath=sse -mssse3 -fno-strict-aliasing -fno-strict-overflow -fwrapv -DAES=1 -DCOMMIT=\"${COMMIT}\" -D_GNU_SOURCE=1 -D_FILE_OFFSET_BITS=64
 LDFLAGS = $(ARCH) -ggdb -rdynamic -lm -lrt -lcrypto -lz -lpthread -lcrypto
 
@@ -91,7 +98,7 @@ ${LIB_OBJS_NORMAL}: ${OBJ}/%.o: %.c | create_dirs_and_headers
 ${EXELIST}: ${LIBLIST}
 
 ${EXE}/mtproto-proxy:	${OBJ}/mtproto/mtproto-proxy.o ${OBJ}/mtproto/mtproto-config.o ${OBJ}/net/net-tcp-rpc-ext-server.o
-	${CC} -o $@ $^ ${LIB}/libkdb.a ${LDFLAGS}
+	${CC} $(LINK_STATIC) -o $@ $^ ${LIB}/libkdb.a ${LDFLAGS}
 
 ${LIB}/libkdb.a: ${LIB_OBJS}
 	rm -f $@ && ar rcs $@ $^
